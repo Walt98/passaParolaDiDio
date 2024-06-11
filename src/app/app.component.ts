@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, computed, effect, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 declare type PassaParola = { key: string; status: string; }
@@ -35,7 +35,10 @@ export class AppComponent implements OnInit
     if (!!n && !!+n && +n > 0 && +n < 16) {
       for (let i = 0; i < +n; i++) {
 
-        const messages = ["Inserisci la lettera.", "Assicurati di inserirne una non ancora presente per un corretto funzionamento del programma."];
+        const messages = [
+          "Inserisci la lettera.",
+          "Assicurati di inserirne una non ancora presente per un corretto funzionamento del programma."
+        ];
         let item = prompt(messages.join("\n"));
   
         if (!!item) {
