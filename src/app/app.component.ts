@@ -20,7 +20,6 @@ export class AppComponent implements OnInit
 
   ngOnInit(): void {
 
-    alert("Compatibile solo con dispositivi dotati di tastiera!".toUpperCase());
     this.setItems();
     addEventListener("keydown", (e: KeyboardEvent) => this.setIndexStatus(e.code));
   }
