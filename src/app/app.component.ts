@@ -62,45 +62,77 @@ export class AppComponent implements OnInit
       if (!!item) this.index = this.items.indexOf(item);
     }
 
+    let allSetted = true;
+
+    this.items.forEach(el => {
+      if (["", "skip"].includes(el.status)) allSetted = false;
+    })
+
     // Va solo avanti
     if (code === "ArrowRight") {
 
-      if (this.index === undefined) this.index = 0;
+      if (this.index === undefined) {
+        if (!allSetted) this.index = 0;
+      }
 
       else if (this.index === this.items.length - 1) {
 
         this.index = 0;
-        while (!["", "skip"].includes(this.items[this.index].status)) this.index++;
+
+        if (!allSetted) {
+          while (!["", "skip"].includes(this.items[this.index].status)) this.index++;
+        }
+        else this.index = undefined;
       }
 
       else {
 
-        do {
-          if (this.index === this.items.length - 1) this.index = 0;
-          else this.index++;
+        if (!allSetted) {
+          do {
+            if (this.index === this.items.length - 1) this.index = 0;
+            else (this.index)++;
+          }
+          while (!["", "skip"].includes(this.items[(this.index)].status));
         }
-        while (!["", "skip"].includes(this.items[this.index].status));
+
+        else this.index = undefined;
       }
     }
 
     // Va solo indietro
     if (code === "ArrowLeft") {
 
-      if (this.index === undefined) this.index = 0;
+      if (this.index === undefined) {
+        if (!allSetted) this.index = 0;
+      }
 
       else if (this.index === 0) {
 
         this.index = this.items.length - 1;
-        while (!["", "skip"].includes(this.items[this.index].status)) this.index--;
+
+        if (!allSetted) {
+          while (!["", "skip"].includes(this.items[this.index].status)) this.index--;
+        }
+        else this.index = undefined;
       }
 
       else {
 
-        do {
-          if (this.index === 0) this.index = this.items.length - 1;
-          else this.index--;
+        let allSetted = true;
+
+        this.items.forEach(el => {
+          if (["", "skip"].includes(el.status)) allSetted = false;
+        });
+
+        if (!allSetted) {
+          do {
+            if (this.index === 0) this.index = this.items.length - 1;
+            else this.index--;
+          }
+          while (!["", "skip"].includes(this.items[this.index].status));
         }
-        while (!["", "skip"].includes(this.items[this.index].status));
+
+        else this.index = undefined;
       }
     }
 
