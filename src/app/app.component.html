@@ -9,7 +9,8 @@
       {
         <div class="circle {{item?.status ?? ''}}"
         [ngClass]="{ 'hover': this.index === $index }"
-        [ngStyle]="{'transform': 'rotate(' + ($index * (360 / items.length)) + 'deg) translate(153px) rotate(' + ((-$index * (360 / items.length)) + 90) + 'deg)'}">
+        [ngStyle]="{'transform': 'rotate(' + ($index * (360 / items.length)) + 'deg) translate(153px) rotate(' + ((-$index * (360 / items.length)) + 90) + 'deg)'}"
+        (click)="setStatus(item)">
           {{ item.key }}
         </div>
       }

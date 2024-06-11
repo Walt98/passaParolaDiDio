@@ -163,4 +163,15 @@ export class AppComponent implements OnInit
       if (this.index !== undefined) this.items[this.index].status = "";
     }
   }
+
+  /**
+   * Cambia lo status dell'item.
+   */
+  setStatus(item: PassaParola) {
+
+    if (item.status === "") item.status = "skip";
+    else if (item.status === "skip") item.status = "success";
+    else if (item.status === "success") item.status = "error";
+    else item.status = "";
+  }
 }
