@@ -77,19 +77,19 @@ export class AppComponent implements OnInit
         if (this.index === undefined) {
           if (!allSetted) this.index = 0;
         }
-  
+
         else if (this.index === this.items.length - 1) {
-  
+
           this.index = 0;
-  
+
           if (!allSetted) {
             while (!["", "skip"].includes(this.items[this.index].status)) this.index++;
           }
           else this.index = undefined;
         }
-  
+
         else {
-  
+
           if (!allSetted) {
             do {
               if (this.index === this.items.length - 1) this.index = 0;
@@ -97,10 +97,10 @@ export class AppComponent implements OnInit
             }
             while (!["", "skip"].includes(this.items[(this.index)].status));
           }
-  
+
           else this.index = undefined;
         }
-  
+
         this.tmpIndex = this.index;
       }
     }
@@ -114,25 +114,25 @@ export class AppComponent implements OnInit
         if (this.index === undefined) {
           if (!allSetted) this.index = 0;
         }
-  
+
         else if (this.index === 0) {
-  
+
           this.index = this.items.length - 1;
-  
+
           if (!allSetted) {
             while (!["", "skip"].includes(this.items[this.index].status)) this.index--;
           }
           else this.index = undefined;
         }
-  
+
         else {
-  
+
           let allSetted = true;
-  
+
           this.items.forEach(el => {
             if (["", "skip"].includes(el.status)) allSetted = false;
           });
-  
+
           if (!allSetted) {
             do {
               if (this.index === 0) this.index = this.items.length - 1;
@@ -140,10 +140,10 @@ export class AppComponent implements OnInit
             }
             while (!["", "skip"].includes(this.items[this.index].status));
           }
-  
+
           else this.index = undefined;
         }
-  
+
         this.tmpIndex = this.index;
       }
     }
@@ -154,7 +154,7 @@ export class AppComponent implements OnInit
       if (this.index !== undefined) {
 
         this.items[this.index].status = "skip";
-        const audio = new Audio("https://cdn.freesound.org/previews/245/245931_4361022-lq.mp3");
+        const audio = new Audio("/skip.mp3");
         audio.play();
       }
     }
@@ -165,7 +165,7 @@ export class AppComponent implements OnInit
       if (this.index !== undefined) {
 
         this.items[this.index].status = "success";
-        const audio = new Audio("https://cdn.freesound.org/previews/335/335908_5865517-lq.mp3");
+        const audio = new Audio("/success.mp3");
         audio.play();
       }
     }
@@ -176,7 +176,7 @@ export class AppComponent implements OnInit
       if (this.index !== undefined) {
 
         this.items[this.index].status = "error";
-        const audio = new Audio("https://cdn.freesound.org/previews/483/483598_6436863-lq.mp3");
+        const audio = new Audio("/error.mp3");
         audio.play();
       }
     }
@@ -202,21 +202,21 @@ export class AppComponent implements OnInit
 
     if (item.status === "") {
 
-      const audio = new Audio("https://cdn.freesound.org/previews/245/245931_4361022-lq.mp3");
+      const audio = new Audio("/skip.mp3");
       audio.play();
       item.status = "skip";
     }
 
     else if (item.status === "skip") {
 
-      const audio = new Audio("https://cdn.freesound.org/previews/335/335908_5865517-lq.mp3");
+      const audio = new Audio("/success.mp3");
       audio.play();
       item.status = "success";
     }
 
     else if (item.status === "success") {
 
-      const audio = new Audio("https://cdn.freesound.org/previews/483/483598_6436863-lq.mp3");
+      const audio = new Audio("/error.mp3");
       audio.play();
       item.status = "error";
     }

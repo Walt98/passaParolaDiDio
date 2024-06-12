@@ -30,7 +30,7 @@ export class TimerComponent {
     }
 
     this.secondi = timerTmp + "";
-    if (this.secondi.length === 1) this.secondi = "0" + this.secondi;
+    if (this.secondi.length === 1 && this.minuti > 0) this.secondi = "0" + this.secondi;
   }
 
   @HostListener('document:keydown', ['$event.code']) onKeydown(code: string) {
@@ -62,15 +62,22 @@ export class TimerComponent {
       this.subscription = interval(1000).subscribe(() => {
 
         // Decrementa il tempo rimanente di 1 secondo
-        if (this.timer > 0) {
+        if (this.timer > 1) {
 
           this.timer--;
           this.setValues();
         }
 
-        // Ferma il timer quando il tempo è scaduto
+        // Per ridurre il più possibile il delay tra timer e gong
+        // ho preferito settarlo io stesso a 0 e far partire subito l'audio
         else {
 
+          this.timer = 0;
+          this.setValues();
+
+          // Ferma il timer quando il tempo è scaduto
+          const audio = new Audio("/done.mp3");
+          audio.play();
           this.subscription.unsubscribe();
           this.isStarted = false;
         }

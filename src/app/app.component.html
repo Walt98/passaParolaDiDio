@@ -5,9 +5,10 @@
 
     <div class="circle-container">
       <app-timer style="transform: rotate(90deg);"></app-timer>
+
       @for (item of items; track $index)
       {
-        <div class="circle {{item?.status ?? ''}}"
+        <div class="circle {{ item.status }}"
         [ngClass]="{ 'hover': this.index === $index }"
         [ngStyle]="{'transform': 'rotate(' + ($index * (360 / items.length)) + 'deg) translate(153px) rotate(' + ((-$index * (360 / items.length)) + 90) + 'deg)'}"
         (click)="setStatus(item)">
@@ -16,7 +17,6 @@
       }
     </div>
 
-    <!-- <img src="logo.png" alt="logo-h" height="130px" width="auto"> -->
-    <img src="logo2.png" alt="logo-h" height="auto" width="130px">
+    <img src="logo.png" alt="logo" width="130px" height="auto">
   }
 </div>
