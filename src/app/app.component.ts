@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { TimerComponent } from './timer/timer.component';
 
 declare type PassaParola = { key: string; status: string; }
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule],
+  imports: [RouterOutlet, CommonModule, TimerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -15,39 +16,33 @@ export class AppComponent implements OnInit
 {
   title = "PassaParola di Dio";
   index?: number;
+  tmpIndex?: number;
   isReady = false;
   items: PassaParola[] = [];
 
   ngOnInit(): void {
 
-    this.setItems();
-    addEventListener("keydown", (e: KeyboardEvent) => this.setIndexStatus(e.code));
+    this.setFields();
   }
 
   /**
-   * Imposta l'array items.
+   * Imposta tutti i campi tramite prompt.
    */
-  private setItems() {
+  private setFields() {
 
     let n = prompt("Inserisci il numero di lettere.", "6");
 
     if (!!n && !!+n && +n > 0 && +n < 16) {
       for (let i = 0; i < +n; i++) {
 
-        const messages = [
-          "Inserisci la lettera.",
-          "Assicurati di inserirne una non ancora presente per un corretto funzionamento del programma."
-        ];
-        let item = prompt(messages.join("\n"));
-  
+        let item = prompt(`Inserisci la ${i + 1}ª lettera.`);
+
         if (!!item) {
           this.items.push({ key: item.toUpperCase(), status: "" });
+
+          if (i === +n - 1) this.isReady = true;
         }
-  
-        if (i === +n - 1) {
-          if (this.items.length === +n) this.isReady = true;
-          else alert("Assicurati di aver inserito correttamente le lettere.");
-        }
+        else break;
       }
     }
     else alert("Assicurati di inserire un numero compreso tra 1 e 15 per continuare.");
@@ -56,12 +51,15 @@ export class AppComponent implements OnInit
   /**
    * Imposta l'index e lo status delle lettere.
    */
-  private setIndexStatus(code: string) {
+  @HostListener('document:keydown', ['$event.code']) onKeydown(code: string) {
 
     if (code.includes("Key")) {
 
       let item = this.items.find(i => i.key === code[3]);
-      if (!!item) this.index = this.items.indexOf(item);
+      if (!!item) {
+        this.index = this.items.indexOf(item);
+        this.tmpIndex = this.index;
+      }
     }
 
     let allSetted = true;
@@ -73,93 +71,127 @@ export class AppComponent implements OnInit
     // Va solo avanti
     if (code === "ArrowRight") {
 
-      if (this.index === undefined) {
-        if (!allSetted) this.index = 0;
-      }
-
-      else if (this.index === this.items.length - 1) {
-
-        this.index = 0;
-
-        if (!allSetted) {
-          while (!["", "skip"].includes(this.items[this.index].status)) this.index++;
-        }
-        else this.index = undefined;
-      }
-
+      if (this.tmpIndex !== this.index && !allSetted) this.index = this.tmpIndex;
       else {
 
-        if (!allSetted) {
-          do {
-            if (this.index === this.items.length - 1) this.index = 0;
-            else (this.index)++;
-          }
-          while (!["", "skip"].includes(this.items[(this.index)].status));
+        if (this.index === undefined) {
+          if (!allSetted) this.index = 0;
         }
-
-        else this.index = undefined;
+  
+        else if (this.index === this.items.length - 1) {
+  
+          this.index = 0;
+  
+          if (!allSetted) {
+            while (!["", "skip"].includes(this.items[this.index].status)) this.index++;
+          }
+          else this.index = undefined;
+        }
+  
+        else {
+  
+          if (!allSetted) {
+            do {
+              if (this.index === this.items.length - 1) this.index = 0;
+              else (this.index)++;
+            }
+            while (!["", "skip"].includes(this.items[(this.index)].status));
+          }
+  
+          else this.index = undefined;
+        }
+  
+        this.tmpIndex = this.index;
       }
     }
 
     // Va solo indietro
     if (code === "ArrowLeft") {
 
-      if (this.index === undefined) {
-        if (!allSetted) this.index = 0;
-      }
-
-      else if (this.index === 0) {
-
-        this.index = this.items.length - 1;
-
-        if (!allSetted) {
-          while (!["", "skip"].includes(this.items[this.index].status)) this.index--;
-        }
-        else this.index = undefined;
-      }
-
+      if (this.tmpIndex !== this.index && !allSetted) this.index = this.tmpIndex;
       else {
 
-        let allSetted = true;
-
-        this.items.forEach(el => {
-          if (["", "skip"].includes(el.status)) allSetted = false;
-        });
-
-        if (!allSetted) {
-          do {
-            if (this.index === 0) this.index = this.items.length - 1;
-            else this.index--;
-          }
-          while (!["", "skip"].includes(this.items[this.index].status));
+        if (this.index === undefined) {
+          if (!allSetted) this.index = 0;
         }
-
-        else this.index = undefined;
+  
+        else if (this.index === 0) {
+  
+          this.index = this.items.length - 1;
+  
+          if (!allSetted) {
+            while (!["", "skip"].includes(this.items[this.index].status)) this.index--;
+          }
+          else this.index = undefined;
+        }
+  
+        else {
+  
+          let allSetted = true;
+  
+          this.items.forEach(el => {
+            if (["", "skip"].includes(el.status)) allSetted = false;
+          });
+  
+          if (!allSetted) {
+            do {
+              if (this.index === 0) this.index = this.items.length - 1;
+              else this.index--;
+            }
+            while (!["", "skip"].includes(this.items[this.index].status));
+          }
+  
+          else this.index = undefined;
+        }
+  
+        this.tmpIndex = this.index;
       }
     }
 
     // PassaParola
-    if (code === "Space") {
+    if (code.includes("Shift")) {
 
-      if (this.index !== undefined) this.items[this.index].status = "skip";
+      if (this.index !== undefined) {
+
+        this.items[this.index].status = "skip";
+        const audio = new Audio("https://cdn.freesound.org/previews/245/245931_4361022-lq.mp3");
+        audio.play();
+      }
     }
 
     // Corretto
     if (code === "Enter") {
 
-      if (this.index !== undefined) this.items[this.index].status = "success";
+      if (this.index !== undefined) {
+
+        this.items[this.index].status = "success";
+        const audio = new Audio("https://cdn.freesound.org/previews/335/335908_5865517-lq.mp3");
+        audio.play();
+      }
     }
 
     // Sbagliato
     if (code === "Backspace") {
 
-      if (this.index !== undefined) this.items[this.index].status = "error";
+      if (this.index !== undefined) {
+
+        this.items[this.index].status = "error";
+        const audio = new Audio("https://cdn.freesound.org/previews/483/483598_6436863-lq.mp3");
+        audio.play();
+      }
     }
 
-    // Annulla
-    if (code === "Escape") {
+    // Nessuno status
+    if (code === "Delete") {
 
       if (this.index !== undefined) this.items[this.index].status = "";
+    }
+
+    // Nessun index
+    if (code === "Escape") {
+
+      if (this.index !== undefined) this.tmpIndex = this.index;
+      this.index = undefined;
     }
   }
 
@@ -168,9 +200,27 @@ export class AppComponent implements OnInit
    */
   setStatus(item: PassaParola) {
 
-    if (item.status === "") item.status = "skip";
-    else if (item.status === "skip") item.status = "success";
-    else if (item.status === "success") item.status = "error";
+    if (item.status === "") {
+
+      const audio = new Audio("https://cdn.freesound.org/previews/245/245931_4361022-lq.mp3");
+      audio.play();
+      item.status = "skip";
+    }
+
+    else if (item.status === "skip") {
+
+      const audio = new Audio("https://cdn.freesound.org/previews/335/335908_5865517-lq.mp3");
+      audio.play();
+      item.status = "success";
+    }
+
+    else if (item.status === "success") {
+
+      const audio = new Audio("https://cdn.freesound.org/previews/483/483598_6436863-lq.mp3");
+      audio.play();
+      item.status = "error";
+    }
+
     else item.status = "";
   }
 }
